@@ -1,0 +1,9 @@
+services:
+  udns-slack-bot:
+    build: .
+    container_name: udns-slack-bot
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./data:/data
