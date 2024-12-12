@@ -28,6 +28,31 @@ app = App(token=SLACK_BOT_TOKEN)
 inference_client = InferenceClient()
 
 # Step 5: Define the bot commands
+# Slash command: /udns-system-status
+@app.command("/udns-system-status")
+def udns_system_status(ack, respond):
+    """
+    Handle the /udns-system-status Slack command.
+
+    Args:
+        ack: Acknowledge the command.
+        respond: Function to send a response to Slack.
+
+    - Fetches the UltraDNS system status JSON.
+    - Calls InferenceClient to analyze the system status.
+    """
+    ack()
+    try:
+        # Fetch system status using UltraDNSClient
+        client = UltraDNSClient(ULTRADNS_USERNAME, ULTRADNS_PASSWORD)
+        system_status = client.fetch_system_status()
+
+        # Use InferenceClient to process the system status
+        inference_client.status_check(system_status, respond)
+
+    except Exception as e:
+        respond(f"Error fetching or analyzing system status: {e}")
+
 # Slash command: /analyze-zone-file
 @app.command("/analyze-zone-file")
 def analyze_zone_file(ack, respond, command):

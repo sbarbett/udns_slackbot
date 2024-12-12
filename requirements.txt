@@ -3,3 +3,4 @@ python-dotenv
 openai
 ultra_rest_client
 slackstyler
+requests

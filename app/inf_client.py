@@ -17,6 +17,36 @@ class InferenceClient:
         """
         pass
 
+    def status_check(self, status, say):
+        """
+        Perform a system status check analysis using the OpenAI Assistant.
+
+        Args:
+            status (str): The JSON response from the UltraDNS system status page.
+            say (function): The Slack say function to send messages to a Slack channel.
+
+        Raises:
+            Exception: If any error occurs during the assistant interaction.
+        """
+        try:
+            asst_client = AssistantClient("system_status")
+            prompt = f"""
+            Analyze the following UltraDNS system status JSON response. Provide a summary of the current state of the system in a conversational format. Focus on:
+            - Whether all services are operational or if any are down/degraded.
+            - Highlighting any affected services with their names and the most recent update timestamps.
+            - Summarizing upcoming maintenance, including affected services, scheduled times, and potential impacts.
+            - If there are active incidents, briefly describe them and the affected services.
+
+            If all services are operational with no issues or maintenance, state "All systems are operational, and no upcoming maintenance is scheduled."
+
+            JSON System Status:
+            {status}
+            """
+            raw_messages = asst_client.run_assistant(prompt)
+            self._process_response(raw_messages, say)
+        except Exception as e:
+            say(f"Error during assistant run: {e}")
+
     def zone_inference(self, zone_file, say):
         """
         Perform DNS zone file analysis using the OpenAI Assistant.

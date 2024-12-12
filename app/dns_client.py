@@ -36,6 +36,26 @@ class UltraDNSClient:
         except Exception as e:
             raise RuntimeError(f"Failed to authenticate with UltraDNS: {e}")
 
+    def fetch_system_status(self):
+        """
+        Fetch the UltraDNS system status from the public Status.io endpoint.
+
+        Returns:
+            dict: The system status data in JSON format.
+
+        Raises:
+            RuntimeError: If the system status fetch fails.
+        """
+        url = "https://1545563159838271.hostedstatus.com/1.0/status/5f80d63ea1c48e04c1dfa100"
+        try:
+            import requests  # Import locally to minimize global dependencies.
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an error for HTTP status codes 4xx/5xx.
+            return json.dumps(response.json()["result"])
+        except requests.RequestException as e:
+            raise RuntimeError(f"Failed to fetch UltraDNS system status: {e}")
+
+
     def fetch_zone_data(self, zone_name):
         """
         Fetch zone data for a specific zone.

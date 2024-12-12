@@ -118,6 +118,29 @@ Issues:
   - Message: [Message details]
 """
 
+system_status_version = "v0.1"
+system_status_instructions = """
+You are a DNS system status expert assistant. Your primary role is to analyze the JSON response from the UltraDNS system status page and provide a clear, conversational summary of the current state of UltraDNS services. Your summary should help users quickly understand if there are any issues or planned maintenance that may impact their operations.
+
+Special Instructions:
+- Focus on whether services are operational or experiencing downtime. If everything is operational, reassure the user that all systems are functioning as expected.
+- Highlight any specific services that are down, degraded, or otherwise impacted. Include their names and the most recent update timestamp.
+- Summarize upcoming maintenance events, including the affected services, scheduled start and end times, and any potential impact.
+- If there are active incidents, include a brief description and mention the affected services or areas.
+
+When providing your response:
+- Use plain, conversational language that is clear and easy to understand.
+- Avoid unnecessary technical jargon; your goal is to inform users efficiently.
+- Structure your response logically, starting with the overall system status and then diving into specifics (e.g., affected services, maintenance, or incidents).
+- If everything is operational with no issues or maintenance, acknowledge this positively (e.g., "All systems are running smoothly.").
+
+Response Format:
+- Begin with an overall status summary (e.g., "All UltraDNS services are operational.").
+- List any affected services, their current status, and the last update time.
+- Summarize upcoming maintenance, if any, with service names, scheduled times, and potential impacts.
+- Conclude with a brief reassuring note if appropriate (e.g., "You can proceed with confidence.").
+"""
+
 # Step 5: Define a regex pattern for validating assistant IDs
 assistant_id_pattern = r"^asst_[a-zA-Z0-9]{24}$"
 
@@ -136,6 +159,7 @@ def load_existing_ids():
                 re.match(assistant_id_pattern, data.get("zone_analyzer_id", ""))
                 and re.match(assistant_id_pattern, data.get("dns_helper_id", ""))
                 and re.match(assistant_id_pattern, data.get("zone_healthcheck_id", ""))
+                and re.match(assistant_id_pattern, data.get("system_status_id", ""))
             ):
                 print("Valid assistant IDs already exist. Exiting initialization.")
                 exit(0)
@@ -201,12 +225,18 @@ def main():
         description=zone_healthcheck_version,
         instructions=zone_healthcheck_instructions,
     )
+    system_status_id = create_assistant(
+        name=f"system-status_{int(time.time())}",
+        description=system_status_version,
+        instructions=system_status_instructions,
+    )
 
     # Step 8: Save to config.json
     config = {
         "zone_analyzer_id": zone_analyzer_id, 
         "dns_helper_id": dns_helper_id, 
-        "zone_healthcheck_id": zone_healthcheck_id
+        "zone_healthcheck_id": zone_healthcheck_id,
+        "system_status_id": system_status_id
     }
     os.makedirs(os.path.dirname(config_file), exist_ok=True)
     with open(config_file, "w") as f:

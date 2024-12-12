@@ -24,7 +24,10 @@ To set up Slack integration, follow these steps:
         - Enable socket mode
         - Copy the app-level token and use this for the `SLACK_APP_TOKEN` value
     * **Slash Commands**
-        - Create two slash commands: `/analyze-zone-file` and `/zone-health-check`
+        - Create the following slash commands: 
+            * `/udns-system-status`
+            * `/analyze-zone-file` 
+            * `/zone-health-check`
         - The command descriptions and hints can be customized to suit your needs.
 
 #### OpenAI Setup
@@ -71,9 +74,15 @@ Mention (`@`) the bot in a channel and ask a DNS-related question. The bot will 
 
 ### Slash commands
 
-The bot currently supports two slash commands: `/analyze-zone-file` and `/zone-health-check`
+The bot currently supports three slash commands: `/udns-system-status`, `/analyze-zone-file` and `/zone-health-check`
 
 ![Screenshot of the commands](./img/commands.png)
+
+#### Checking system status
+
+Use the `/udns-system-status` command to check for any current outages, events or upcoming maintenance.
+
+![Screenshot of the commands](./img/status.png)
 
 #### Analyzing a zone file
 
